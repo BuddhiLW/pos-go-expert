@@ -1,4 +1,6 @@
-package fundacao
+func main() {
+pa
+ckage fundacao
 
 import "fmt"
 
@@ -52,4 +54,5 @@ func Structs() {
 	fmt.Println("Struct instances of StruFooBar and StruBarfoo will look identical, but aren't.")
 	fmt.Println("Composition vs Standard type (implies direct access vs not direct access):")
 	fmt.Printf("struFooBar.S (%v) == struBarfoo.SFoo.S (%v)? %v", struFooBar.S, struBarfoo.SFoo.S, struFooBar.S == struBarfoo.SFoo.S)
+}
 }

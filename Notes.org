@@ -31,11 +31,11 @@ func main() {
 : O tipo criado pelo fantasma da máquina: main.ID
 : Exemplos de tipos nativos: bool int string float64
 
-* TODO Structs and Interfaces
+* DONE Structs and Interfaces
 DEADLINE: <2023-12-06 Wed> SCHEDULED: <2023-12-06 Wed>
 
-#+begin_src go :tangle ./pos-go-expert/fundacao/structs.go
-package main
+#+begin_src go :tangle ./fundacao/structs.go
+package fundacao
 
 import "fmt"
 
@@ -62,7 +62,7 @@ type StruBarfoo struct {
 	SFoo StruFoo
 }
 
-func main() {
+func Structs() {
 	struFoo := StruFoo{
 		S: "Foo",
 		I: 256,
@@ -92,10 +92,14 @@ func main() {
 }
 #+end_src
 
+#+begin_src shell :results verbatim
+go run ./main.go
+#+end_src
+
 #+RESULTS:
-: struFoo: {Foo 256 true} main.StruFoo
-: struFooBar: {[Foo Bar] [256 512] [true false] {Foo 256 true}} main.StruFooBar
-: struBarfoo: {[Foo Bar] [256 512] [true false] {Foo 256 true}} main.StruBarfoo
+: struFoo: {Foo 256 true} fundacao.StruFoo
+: struFooBar: {[Foo Bar] [256 512] [true false] {Foo 256 true}} fundacao.StruFooBar
+: struBarfoo: {[Foo Bar] [256 512] [true false] {Foo 256 true}} fundacao.StruBarfoo
 :
 : Struct instances of StruFooBar and StruBarfoo will look identical, but aren't.
 : Composition vs Standard type (implies direct access vs not direct access):
