@@ -3,6 +3,8 @@
 * DONE Types and variables declaration
 DEADLINE: <2023-12-04 Mon> SCHEDULED: <2023-12-04 Mon>
 
+Alguma coisa
+
 #+begin_src go
 package main
 
