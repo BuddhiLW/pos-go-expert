@@ -104,3 +104,76 @@ go run ./main.go
 : Struct instances of StruFooBar and StruBarfoo will look identical, but aren't.
 : Composition vs Standard type (implies direct access vs not direct access):
 : struFooBar.S (Foo) == struBarfoo.SFoo.S (Foo)? true
+* DONE Interfaces
+Interface structurally share =GCD= (Greatest Common Denominator) logic for Types.
+
+The class =A={2, 6, 26}= all have different set of factors. But, GCD(A)=2. That is, every one of the members of A have a common factor 2 which makes them similar.
+
+All of the elements of A can be divided by two. That's there common capability.
+
+The same can be said of =Interface= _I_, which are those types which have an implemented _function_ =F1= among their capabilities.
+
+#+begin_src go :tangle ./fundacao/interfaces.go
+package fundacao
+
+import "fmt"
+
+// Interfaces
+type I interface {
+	F1()
+}
+
+func (s StruFoo) F1() {
+	fmt.Printf("StruFoo prints itself: %v \n", s)
+}
+
+func (s StruFooBar) F1() {
+	fmt.Printf("StruFooBar prints itself: %v \n", s)
+}
+
+func (s StruBarfoo) F1() {
+	fmt.Printf("StruBarfoo print itself: %v \n", s)
+}
+
+func Interfaces() {
+	struFoo := StruFoo{
+		S: "Foo",
+		I: 256,
+		B: true,
+	}
+
+	struFooBar := StruFooBar{
+		SS:      []string{"Foo", "Bar"},
+		II:      []int{256, 512},
+		BB:      []bool{true, false},
+		StruFoo: struFoo,
+	}
+
+	struBarfoo := StruBarfoo{
+		SS:   []string{"Foo", "Bar"},
+		II:   []int{256, 512},
+		BB:   []bool{true, false},
+		SFoo: struFoo,
+	}
+
+	fmt.Println("Interfaces:")
+	fmt.Println("If all Types X, Y, Z have the same capability of F1(), F2() etc., then they share the same Interface I := {X | exists F1(), F2() etc such that X.F1(), X.F2() etc. is valid}")
+
+	var i I
+	i = struFoo
+	i.F1()
+	i = struFooBar
+	i.F1()
+	i = struBarfoo
+	i.F1()
+}
+#+end_src
+
+* TODO Pointers and Variables
+#+begin_src go :tangle ./fundacao/pointers-variables.go
+package main
+
+func main() {
+
+}
+#+end_src

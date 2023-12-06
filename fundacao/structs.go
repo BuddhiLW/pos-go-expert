@@ -1,6 +1,4 @@
-func main() {
-pa
-ckage fundacao
+package fundacao
 
 import "fmt"
 
@@ -47,12 +45,13 @@ func Structs() {
 		BB:   []bool{true, false},
 		SFoo: struFoo,
 	}
+	fmt.Println("Structs:")
 	fmt.Printf("struFoo: %v %T \n", struFoo, struFoo)
 	fmt.Printf("struFooBar: %v %T \n", struFooBar, struFooBar)
 	fmt.Printf("struBarfoo: %v %T \n\n", struBarfoo, struBarfoo)
 
 	fmt.Println("Struct instances of StruFooBar and StruBarfoo will look identical, but aren't.")
 	fmt.Println("Composition vs Standard type (implies direct access vs not direct access):")
-	fmt.Printf("struFooBar.S (%v) == struBarfoo.SFoo.S (%v)? %v", struFooBar.S, struBarfoo.SFoo.S, struFooBar.S == struBarfoo.SFoo.S)
-}
+	fmt.Printf("struFooBar.S (%v) == struBarfoo.SFoo.S (%v)? %v\n\n", struFooBar.S, struBarfoo.SFoo.S, struFooBar.S == struBarfoo.SFoo.S)
+	fmt.Println("-------------------------------------------\n")
 }
