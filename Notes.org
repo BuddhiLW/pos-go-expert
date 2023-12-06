@@ -1,0 +1,102 @@
+#+title: Readme
+
+* DONE Types and variables declaration
+DEADLINE: <2023-12-04 Mon> SCHEDULED: <2023-12-04 Mon>
+
+#+begin_src go
+package main
+
+import "fmt"
+
+
+type ID int
+
+var (b bool = true
+	c int = 10
+	d string = "Pedro"
+	e float64 = 10.0
+	f ID = 1)
+
+const a = "Olá, mundo!"
+
+func main() {
+	fmt.Printf("Mensagem do fantasma da máquina: %v \n", a)
+	fmt.Printf("O tipo criado pelo fantasma da máquina: %T \n", f)
+	fmt.Printf("Exemplos de tipos nativos: %T %T %T %T", b, c, d, e)
+}
+#+end_src
+
+#+RESULTS:
+: Mensagem do fantasma da máquina: Olá, mundo!
+: O tipo criado pelo fantasma da máquina: main.ID
+: Exemplos de tipos nativos: bool int string float64
+
+* TODO Structs and Interfaces
+DEADLINE: <2023-12-06 Wed> SCHEDULED: <2023-12-06 Wed>
+
+#+begin_src go :tangle ./pos-go-expert/fundacao/structs.go
+package main
+
+import "fmt"
+
+// Custom Type StruFoo
+type StruFoo struct {
+	S string
+	I int
+	B bool
+}
+
+// Composed custom type StruFooBar
+type StruFooBar struct {
+	SS []string
+	II []int
+	BB []bool
+	StruFoo
+}
+
+// Custom type, StruBarfoo, relying on another Custom Type, StruFoo
+type StruBarfoo struct {
+	SS   []string
+	II   []int
+	BB   []bool
+	SFoo StruFoo
+}
+
+func main() {
+	struFoo := StruFoo{
+		S: "Foo",
+		I: 256,
+		B: true,
+	}
+
+	struFooBar := StruFooBar{
+		SS:      []string{"Foo", "Bar"},
+		II:      []int{256, 512},
+		BB:      []bool{true, false},
+		StruFoo: struFoo,
+	}
+
+	struBarfoo := StruBarfoo{
+		SS:   []string{"Foo", "Bar"},
+		II:   []int{256, 512},
+		BB:   []bool{true, false},
+		SFoo: struFoo,
+	}
+	fmt.Printf("struFoo: %v %T \n", struFoo, struFoo)
+	fmt.Printf("struFooBar: %v %T \n", struFooBar, struFooBar)
+	fmt.Printf("struBarfoo: %v %T \n\n", struBarfoo, struBarfoo)
+
+	fmt.Println("Struct instances of StruFooBar and StruBarfoo will look identical, but aren't.")
+	fmt.Println("Composition vs Standard type (implies direct access vs not direct access):")
+	fmt.Printf("struFooBar.S (%v) == struBarfoo.SFoo.S (%v)? %v", struFooBar.S, struBarfoo.SFoo.S, struFooBar.S == struBarfoo.SFoo.S)
+}
+#+end_src
+
+#+RESULTS:
+: struFoo: {Foo 256 true} main.StruFoo
+: struFooBar: {[Foo Bar] [256 512] [true false] {Foo 256 true}} main.StruFooBar
+: struBarfoo: {[Foo Bar] [256 512] [true false] {Foo 256 true}} main.StruBarfoo
+:
+: Struct instances of StruFooBar and StruBarfoo will look identical, but aren't.
+: Composition vs Standard type (implies direct access vs not direct access):
+: struFooBar.S (Foo) == struBarfoo.SFoo.S (Foo)? true
