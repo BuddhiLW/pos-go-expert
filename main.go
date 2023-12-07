@@ -7,4 +7,5 @@ import (
 func main() {
 	fundacao.Structs()
 	fundacao.Interfaces()
+	fundacao.Pointers()
 }
