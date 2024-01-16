@@ -40,7 +40,6 @@ func Interfaces() {
 		SFoo: struFoo,
 	}
 
-	fmt.Println("Interfaces:")
 	fmt.Println("If all Types X, Y, Z have the same capability of F1(), F2() etc., then they share the same Interface I := {X | exists F1(), F2() etc such that X.F1(), X.F2() etc. is valid}")
 
 	var i I

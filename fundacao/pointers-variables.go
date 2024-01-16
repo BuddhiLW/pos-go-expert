@@ -4,12 +4,12 @@ import "fmt"
 
 func (s *StruFoo) FM1() {
 	s.S = "passed through FM1"
-	fmt.Println("Passing through FM1, we have: i.S =", s.S)
+	fmt.Println("While passing through FM1, we have: i.S =", s.S)
 }
 
 func (s StruFoo) FnM2() {
 	s.S = "passed through FM2"
-	fmt.Println("Passing through FnM2, we have: i.S =", s.S)
+	fmt.Println("While passing through FnM2, we have: i.S =", s.S)
 }
 
 func Pointers() {
@@ -19,8 +19,6 @@ func Pointers() {
 		B: true,
 	}
 
-	fmt.Println("\n-----------------------------------\n")
-	fmt.Println("Pointers:")
 	a := 256
 	fmt.Printf("a value is: %v (a). It's adress is: %v (&a) \n", a, &a)
 

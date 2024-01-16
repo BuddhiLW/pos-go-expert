@@ -1,5 +1,5 @@
-#+title: Readme
 
+#+title: Readme
 * DONE Types and variables declaration
 DEADLINE: <2023-12-04 Mon> SCHEDULED: <2023-12-04 Mon>
 
@@ -168,8 +168,7 @@ func Interfaces() {
 	i.F1()
 }
 #+end_src
-
-* TODO Pointers and Variables
+* DONE Pointers and Variables
 When functions operate on variables it will make a copy, and operate on the copy.
 
 If you want to mutate, you have to use pointers.
@@ -206,3 +205,36 @@ func pointers() {
 	fmt.Println("after i.FnM2(), we have: i.S =", i.S)
 }
 #+end_src
+
+* DONE Modules
+A working manner to use any modules - either internal or external to the project - is to:
+1) Import the module inside a go file.
+2) Go to the root of the project, in a terminal
+3) Run `go mod tidy`
+
+Example of (1):
+#+begin_src go
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/google/uuid"
+)
+#+end_src
+
+This example uses several different `import`s. Both from an external project, and from the _core_ libraries language of go.
+
+Example two of (1):
+#+begin_src go
+import (
+	"fmt"
+
+	fundacao "github.com/buddhilw/pos-go-expert/fundacao"
+)
+#+end_src
+
+This example `import`s from the _core_ libraries (=fmt=) and from a internal module (=fundacao=)
+
+Final consideration:
+=go mod tidy= will automatically figure the dependency trees and version for the current project and update the list of dependencies, in case a new one is being used, or any of them is not being used (and then is discarded from the list).
