@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	fundacao "github.com/buddhilw/pos-go-expert/fundacao"
+	packages "github.com/buddhilw/pos-go-expert/important-packages"
 )
 
 func Spacing() {
@@ -25,4 +26,8 @@ func main() {
 
 	fmt.Println("Modules:")
 	fundacao.Modules()
+	Spacing()
+
+	fmt.Println("File Manipulation:")
+	packages.FileManipulation()
 }
