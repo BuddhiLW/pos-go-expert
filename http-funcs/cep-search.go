@@ -8,8 +8,9 @@ import (
 )
 
 func CEP() {
-	http.HandleFunc("/cep", SearchCEP)
-	http.ListenAndServe(":8989", nil)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/cep", SearchCEP)
+	http.ListenAndServe(":8989", mux)
 }
 
 func SearchCEP(w http.ResponseWriter, r *http.Request) {
