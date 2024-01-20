@@ -238,3 +238,101 @@ This example `import`s from the _core_ libraries (=fmt=) and from a internal mod
 
 Final consideration:
 =go mod tidy= will automatically figure the dependency trees and version for the current project and update the list of dependencies, in case a new one is being used, or any of them is not being used (and then is discarded from the list).
+* TODO Common Libraries
+** TODO OS (Filesystem manipulation)
+** TODO JSON Marshall/Unmarshall
+** TODO HTTP Calls
+*** TODO CEP HTTP call
+* TODO Vocabulary
+** TODO What is a Multiplexer? (ChatGPT prompting)
+
+#+begin_src quote
+<user>: What is a Multiplexer?
+
+<assistant>: A multiplexer, also known as a data selector, is a digital
+electronic device that allows multiple input signals to be transmitted through a
+single output line. It selects one input signal at a time and routes it to the
+output line based on a control signal. Multiplexers are commonly used in various
+applications like telecommunications, computer systems, digital data
+transmission, and analog-to-digital conversion.
+
+In simpler terms, a multiplexer acts like a traffic controller for data. It
+takes multiple input signals and combines them into one output signal, which can
+then be transmitted over a single line or channel. The selection of the input
+signal to be transmitted is determined by the control signal, which typically
+consists of binary data or a digital signal.
+
+Multiplexers are an essential component in data communication systems as they
+enable the efficient transmission of multiple signals over limited channels.
+They help in optimizing communication infrastructure, reducing the necessary
+number of physical connections, and saving costs and space.
+
+<user>: More specifically, how does that apply to computer programing, with go
+language?
+
+<assistant>: In computer programming, including Go language, multiplexers can be
+used to handle concurrent or parallel processing. In Go, this is achieved using
+the concept of goroutines and channels.
+
+Goroutines are lightweight threads that allow concurrent execution of functions
+or code blocks. Channels, on the other hand, provide a way for goroutines to
+communicate and synchronize their operations. A multiplexer in Go can be
+implemented using a select statement, which acts as a multiplexing control
+structure.
+
+With a select statement in Go, you can listen to multiple channels
+simultaneously and execute the corresponding case block when the data is
+available on any of the channels. This allows you to coordinate and handle input
+or output from multiple goroutines efficiently.
+
+Here's a simple example of a multiplexer in Go using the select statement:
+
+
+#+end_src
+
+#+begin_src go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	ch1 := make(chan string)
+	ch2 := make(chan string)
+
+	go func() {
+		time.Sleep(2 * time.Second)
+		ch1 <- "Hello from channel 1"
+	}()
+
+	go func() {
+		time.Sleep(1 * time.Second)
+		ch2 <- "Hello from channel 2"
+	}()
+
+	for i := 0; i < 2; i++ {
+		select {
+		case msg1 := <-ch1:
+			fmt.Println(msg1)
+		case msg2 := <-ch2:
+			fmt.Println(msg2)
+		}
+	}
+}
+#+end_src
+
+#+RESULTS:
+: Hello from channel 2
+: Hello from channel 1
+
+#+begin_src quote
+In this code snippet, two goroutines are created to send messages through
+different channels after a specific delay. The select statement in the main
+function listens to both channels and prints the message received first.
+
+Multiplexing using select in Go allows you to handle multiple concurrent
+operations efficiently, providing more flexibility and control in your programs.
+
+#+end_src
