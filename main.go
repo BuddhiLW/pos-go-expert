@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 
 	fundacao "github.com/buddhilw/pos-go-expert/fundacao"
 	http_funcs "github.com/buddhilw/pos-go-expert/http-funcs"
 	packages "github.com/buddhilw/pos-go-expert/important-packages"
+	templates "github.com/buddhilw/pos-go-expert/important-packages/templates"
 )
 
 func Spacing() {
@@ -42,5 +44,18 @@ func main() {
 	Spacing()
 
 	fmt.Println("HTTP Server for searching CEPs:")
-	http_funcs.CEP()
+	go http_funcs.CEP()
+	Spacing()
+
+	fmt.Println("HTTP Server for serving files:")
+	go http_funcs.FileServer()
+	Spacing()
+
+	defer runtime.Goexit()
+
+	fmt.Println("Templating system:")
+	templates.First()
+	Spacing()
+
+	// defer fmt.Println("Server exiting!")
 }
