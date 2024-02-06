@@ -7,7 +7,7 @@ import (
 	"github.com/buddhilw/pos-go-expert/fundacao"
 	http_funcs "github.com/buddhilw/pos-go-expert/http-funcs"
 	packages "github.com/buddhilw/pos-go-expert/important-packages"
-	templates "github.com/buddhilw/pos-go-expert/important-packages/templates"
+	"github.com/buddhilw/pos-go-expert/important-packages/templates"
 )
 
 func Spacing() {
@@ -63,5 +63,12 @@ func main() {
 	go templates.TemplateWebServer()
 	Spacing()
 
+	fmt.Println("Calling Google with Timeout")
+	go http_funcs.TimeOutHTTP()
+	Spacing()
+
+	fmt.Println("Posting to Google")
+	go http_funcs.PostHTTP()
+	Spacing()
 	// defer fmt.Println("Server exiting!")
 }
