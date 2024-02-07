@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
+	"github.com/buddhilw/pos-go-expert/context"
 	"github.com/buddhilw/pos-go-expert/fundacao"
 	http_funcs "github.com/buddhilw/pos-go-expert/http-funcs"
 	packages "github.com/buddhilw/pos-go-expert/important-packages"
@@ -63,12 +64,15 @@ func main() {
 	go templates.TemplateWebServer()
 	Spacing()
 
-	fmt.Println("Calling Google with Timeout")
-	go http_funcs.TimeOutHTTP()
-	Spacing()
+	// fmt.Println("Calling Google with Timeout")
+	// go http_funcs.TimeOutHTTP()
+	// Spacing()
 
-	fmt.Println("Posting to Google")
-	go http_funcs.PostHTTP()
+	// fmt.Println("Posting to Google")
+	// go http_funcs.PostHTTP()
+	// Spacing()
+
+	fmt.Println("Context - Will it book? - example:")
+	context.Context()
 	Spacing()
-	// defer fmt.Println("Server exiting!")
 }
