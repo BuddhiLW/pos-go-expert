@@ -242,6 +242,99 @@ Final consideration:
 ** TODO JSON Marshall/Unmarshall
 ** TODO HTTP Calls
 *** TODO CEP HTTP call
+* STRT Working with DBs - MariaDB (MySQL fork)
+** Setup
+#+begin_src shell
+cd banco-de-dados
+sudo docker compose up -d
+#+end_src
+
+Enter the container, using a bash command line
+#+begin_src shell
+sudo docker compose exec db bash
+#+end_src
+
+#+begin_src shell
+mariadb --user=buddhilw --password=pass goexpert
+create table products (id varchar(255), name varchar(80), price decimal(10,2), primary key (id));
+#+end_src
+** Code inserting data in DB
+#+begin_src go
+package db
+
+import (
+	"database/sql"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
+)
+
+type Product struct {
+	ID    string
+	Name  string
+	Price float64
+}
+
+func NewProduct(name string, price float64) *Product {
+	return &Product{
+		ID:    uuid.New().String(),
+		Name:  name,
+		Price: price,
+	}
+}
+
+func ConnectDB() *sql.DB {
+	// connect to database
+	db, err := sql.Open("mysql", "buddhilw:pass@tcp(localhost:3306)/goexpert")
+	if err != nil {
+		panic(err)
+	}
+	return db
+}
+
+func InsertProductDB(db *sql.DB, product *Product) error {
+	stmt, err := db.Prepare("INSERT INTO products(id, name, price) VALUES(?, ?, ?)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(product.ID, product.Name, product.Price)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func NewProductExample() {
+	db := ConnectDB()
+	defer db.Close()
+
+	product := NewProduct("new product", 10.0)
+	err := InsertProductDB(db, product)
+	if err != nil {
+		panic(err)
+	}
+}
+#+end_src
+
+** Show data from MariaDB
+Inside the =mysql= command line
+#+begin_src shell
+SHOW TABLES;
+SELECT * FROM products;
+#+end_src
+
+#+begin_quote
++--------------------------------------+-------------+-------+
+| id                                   | name        | price |
++--------------------------------------+-------------+-------+
+| 87e5827a-f4e4-44b6-bbd6-f42d58a9dcd9 | new product | 10.00 |
++--------------------------------------+-------------+-------+
+1 row in set (0.000 sec)
+#+end_quote
+
+
 * TODO Vocabulary
 ** TODO What is a Multiplexer? (ChatGPT prompting)
 
