@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	exp_gorm "github.com/buddhilw/pos-go-expert/gorm"
 )
 
 func Spacing() {
@@ -69,29 +71,45 @@ func main() {
 	// context.Context()
 	// Spacing()
 
-	fmt.Println("DB - New product:")
-	db.NewProductExample()
+	// fmt.Println("DB - New product:")
+	// db.NewProductExample()
+	// Spacing()
+
+	// fmt.Println("DB - Search by product-name:")
+	// db.SearchByNameExample()
+	// Spacing()
+
+	// fmt.Println("DB - Update product-price by product-name:")
+	// db.UpdateProductExample()
+	// db.SearchByNameExample()
+	// Spacing()
+
+	// fmt.Println("DB - Update product-price by product-id:")
+	// db.UpdateProductExample2()
+	// Spacing()
+
+	// fmt.Println("DB - All products:")
+	// db.AllProductsExample()
+	// Spacing()
+
+	// fmt.Println("DB - Delete all products:")
+	// db.DeleteAllProductsExample()
+	// db.AllProductsExample()
+	// Spacing()
+
+	fmt.Println("DB-GORM - Automigrate:")
+	exp_gorm.AutoMigrateExample()
 	Spacing()
 
-	fmt.Println("DB - Search by product-name:")
-	db.SearchByNameExample()
+	fmt.Println("DB-GORM - Create products:")
+	exp_gorm.GormCreateProductsExample()
 	Spacing()
 
-	fmt.Println("DB - Update product-price by product-name:")
-	db.UpdateProductExample()
-	db.SearchByNameExample()
+	fmt.Println("DB-GORM - Read products:")
+	exp_gorm.GormReadProductsExample()
 	Spacing()
 
-	fmt.Println("DB - Update product-price by product-id:")
-	db.UpdateProductExample2()
-	Spacing()
-
-	fmt.Println("DB - All products:")
-	db.AllProductsExample()
-	Spacing()
-
-	fmt.Println("DB - Delete all products:")
-	db.DeleteAllProductsExample()
-	db.AllProductsExample()
+	fmt.Println("DB-GORM - Delete all products:")
+	exp_gorm.GormDeleteAllProductsExample()
 	Spacing()
 }

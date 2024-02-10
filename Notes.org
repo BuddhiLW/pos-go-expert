@@ -270,6 +270,59 @@ SELECT * FROM products;
 +--------------------------------------+-------------+-------+
 1 row in set (0.000 sec)
 #+end_quote
+** GORM
+#+begin_src go
+type Product struct {
+	ID    int `gorm:"primary_key"`
+	Name  string
+	Price float64
+}
+
+func ConnectDB() *gorm.DB {
+	dns := "buddhilw:pass@tcp(localhost:3306)/goexpert"
+	db, err := gorm.Open(mysql.Open(dns), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	return db
+}
+
+func Migration(db *gorm.DB) {
+	db.AutoMigrate(&Product{})
+}
+
+func AutoMigrateExample() {
+	db := ConnectDB()
+	Migration(db)
+}
+#+end_src
+
+#+begin_export output
+MariaDB [goexpert]> describe products;
++-------+------------+------+-----+---------+----------------+
+| Field | Type       | Null | Key | Default | Extra          |
++-------+------------+------+-----+---------+----------------+
+| id    | bigint(20) | NO   | PRI | NULL    | auto_increment |
+| name  | longtext   | YES  |     | NULL    |                |
+| price | double     | YES  |     | NULL    |                |
++-------+------------+------+-----+---------+----------------+
+3 rows in set (0.001 sec)
+
+
+MariaDB [goexpert]> select * from products;
++----+----------+-------+
+| id | name     | price |
++----+----------+-------+
+|  1 | Laptop   |  1000 |
+|  2 | Mouse    |   100 |
+|  3 | Keyboard |   250 |
+|  4 | Monitor  |   500 |
++----+----------+-------+
+4 rows in set (0.000 sec)
+#+end_export
+
+*** Questions
+In what moment the table =products= was created/implied in migration? If we changed the =type= to =airplane=, would the table be called =airplanes=, in migration?
 
 
 * TODO Vocabulary
