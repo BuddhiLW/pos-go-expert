@@ -9,9 +9,17 @@ import (
 )
 
 type Product struct {
-	ID    int `gorm:"primary_key"`
-	Name  string
-	Price float64
+	ID         int `gorm:"primary_key"`
+	Name       string
+	Price      float64
+	CategoryID int `gorm:"foreignkey:ID;default:1"`
+	Category   *Category
+	gorm.Model
+}
+
+type Category struct {
+	ID   int `gorm:"primary_key"`
+	Name string
 }
 
 func ConnectDB() *gorm.DB {
@@ -22,7 +30,7 @@ func ConnectDB() *gorm.DB {
 	//   Conn: sqlDB,
 	// }), &gorm.Config{})
 
-	dns := "buddhilw:pass@tcp(localhost:3306)/goexpert"
+	dns := "buddhilw:pass@tcp(localhost:3306)/goexpert?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dns), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -31,7 +39,16 @@ func ConnectDB() *gorm.DB {
 }
 
 func Migration(db *gorm.DB) {
-	db.AutoMigrate(&Product{})
+	db.AutoMigrate(&Product{}, &Category{})
+
+	var c0 Category
+	db.First(&c0, 1)
+	if c0.ID == 1 {
+		return
+	} else {
+		category := Category{Name: "Generic"}
+		db.Create(&category)
+	}
 }
 
 func AutoMigrateExample() {
