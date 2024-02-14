@@ -10,16 +10,22 @@ func GormCreateProductsExample() {
 	db := ConnectDB()
 	Migration(db)
 
-	var category Category
-	db.First(&category, 1)
+	var categories []Category
+	db.Find(&categories)
+	fmt.Println(categories)
+
+	// db.Create(&SerialNumber{Number: "1234", ProductID: 1})
 
 	// Create
 	products := []Product{
-		{Name: "Laptop", Price: 1000, CategoryID: category.ID},
-		{Name: "Mouse", Price: 100, CategoryID: category.ID},
-		{Name: "Keyboard", Price: 250, CategoryID: category.ID},
-		{Name: "Monitor", Price: 500, CategoryID: category.ID},
-	}
+		{Name: "Laptop", Price: 1000,
+			Categories: []Category{categories[0], categories[3]}},
+		{Name: "Mouse", Price: 100,
+			Categories: []Category{categories[0], categories[1]}},
+		{Name: "Keyboard", Price: 250,
+			Categories: []Category{categories[0], categories[2]}},
+		{Name: "Monitor", Price: 500,
+			Categories: []Category{categories[0], categories[1], categories[2]}}}
 	db.Create(&products)
 }
 

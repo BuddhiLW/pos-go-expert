@@ -109,6 +109,10 @@ func main() {
 	exp_gorm.GormReadProductsExample()
 	Spacing()
 
+	// fmt.Println("DB-GORM - Preloaded find:")
+	// exp_gorm.PreloadedFindExample()
+	// Spacing()
+
 	fmt.Println("DB-GORM - Delete all products:")
 	exp_gorm.GormDeleteAllProductsExample()
 	Spacing()

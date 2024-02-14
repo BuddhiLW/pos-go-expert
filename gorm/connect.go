@@ -8,20 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type Product struct {
-	ID         int `gorm:"primary_key"`
-	Name       string
-	Price      float64
-	CategoryID int `gorm:"foreignkey:ID;default:1"`
-	Category   *Category
-	gorm.Model
-}
-
-type Category struct {
-	ID   int `gorm:"primary_key"`
-	Name string
-}
-
 func ConnectDB() *gorm.DB {
 	// -----
 	//
@@ -48,6 +34,12 @@ func Migration(db *gorm.DB) {
 	} else {
 		category := Category{Name: "Generic"}
 		db.Create(&category)
+		category2 := Category{Name: "Eletronics"}
+		db.Create(&category2)
+		category3 := Category{Name: "Computers"}
+		db.Create(&category3)
+		category4 := Category{Name: "Peripherals"}
+		db.Create(&category4)
 	}
 }
 
