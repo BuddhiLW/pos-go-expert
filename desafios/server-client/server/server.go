@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/buddhilw/pos-go-expert/desafios/server-client/client"
-	_ "github.com/go-sql-driver/mysql"
-	"gorm.io/driver/mysql"
+	// _ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -172,8 +172,9 @@ func StoreDolarBid(bid float64) error {
 
 func connectDB() *gorm.DB {
 	// connect to database
-	dns := "user:pass@tcp(localhost:3306)/challenge1?charset=utf8mb4&parseTime=True&loc=Local"
-	conn, err := gorm.Open(mysql.Open(dns), &gorm.Config{})
+	// user:pass@tcp(localhost:3306)/challenge1?charset=utf8mb4&parseTime=True&loc=Local
+	dns := "local.db"
+	conn, err := gorm.Open(sqlite.Open(dns), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

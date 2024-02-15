@@ -16,11 +16,13 @@ if $BASENAME != "server-client"; then
     echo "Please, run this script from 'server-client' directory"
     exit 1
 else
-    sudo docker compose exec db bash
+    # sudo docker compose exec db bash
     go run main.go
 fi
 #+end_src
-* Setup
+* Setup (current: 240215134928-03)
+No setup needed. Sqlite database will be local (=local.db=). The db will be on the same directory as =cotacao.txt=.
+* Setup (Old)
 The setup of the server and client is done using Docker Compose. And involves
 only a MySQL database.
 
