@@ -22,53 +22,6 @@ fi
 #+end_src
 * Setup (current: 240215134928-03)
 No setup needed. Sqlite database will be local (=local.db=). The db will be on the same directory as =cotacao.txt=.
-* Setup (Old)
-The setup of the server and client is done using Docker Compose. And involves
-only a MySQL database.
-
-** Database
-How it's done:
-#+begin_src shell
-sudo docker compose up -d
-#+end_src
-
-Which uses the following setup for a MySQL database (MariaDB):
-#+begin_src yaml
-version: '3.1'
-
-volumes:
-  data:
-
-services:
-
-  db:
-    image: mariadb
-    restart: always
-    container_name: challenge1DB
-    environment:
-      MARIADB_ROOT_PASSWORD: pass
-      MYSQL_DATABASE: challenge1
-      MYSQL_USER: user
-      MYSQL_PASSWORD: pass
-    volumes:
-      - data:/var/lib/mysql
-    ports:
-      - "3306:3306"
-#+end_src
-
-** Checking the database (after running the server and client)
-#+begin_src shell
-sudo docker compose exec db bash
-#+end_src
-
-#+begin_src shell
-mariadb --user=user --password=pass challenge1
-#+end_src
-
-#+begin_src shell
-SHOW TABLES;
-SELECT * FROM bids;
-#+end_src
 * Introdução (Instrutions)
 ** Overview
 Neste desafio vamos aplicar o que aprendemos sobre webserver http, contextos,
