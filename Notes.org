@@ -324,7 +324,6 @@ MariaDB [goexpert]> select * from products;
 *** Questions
 In what moment the table =products= was created/implied in migration? If we changed the =type= to =airplane=, would the table be called =airplanes=, in migration?
 
-
 * TODO Vocabulary
 ** TODO What is a Multiplexer? (ChatGPT prompting)
 
