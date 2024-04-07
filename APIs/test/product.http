@@ -1,0 +1,10 @@
+# -*- http -*-
+
+POST http://localhost:8009/products
+User-Agent: Emacs
+Content-Type: application/json
+
+{
+ "name" : "MyProduct",
+ "price": 100
+}
