@@ -34,9 +34,9 @@ func main() {
 	r.Use(middleware.Logger)
 
 	r.Post("/products", productHandler.CreateProduct)
-	// http.HandleFunc("/products", productHandler.CreateProduct)
 	r.Get("/products/{id}", productHandler.GetProduct)
 	r.Put("/products/{id}", productHandler.UpdateProduct)
+	r.Delete("/products/{id}", productHandler.DeleteProduct)
 
 	fmt.Println("Serving at:", string(config.WebSeverPort))
 	http.ListenAndServe(":"+string(config.WebSeverPort), r)

@@ -5,23 +5,35 @@ User-Agent: Emacs
 Content-Type: application/json
 
 {
- "name" : "My Product 3",
+ "name" : "MyProduct",
  "price": 200
 }
 
+########
+
+GET http://localhost:8009/products/f48db78e-4673-414a-9c19-385269a34af2
+User-Agent: Emacs
+Content-Type: application/json
+
+########
+
+PUT http://localhost:8009/products/f48db78e-4673-414a-9c19-385269a34af2
+User-Agent: Emacs
+Content-Type: application/json
+
+{
+ "name" : "My Product Updated 2",
+ "price": 2000
+}
+
+########
+
+DELETE http://localhost:8009/products/90c0393d-0bbe-4d72-bdb3-9a27c769c9ff
+User-Agent: Emacs
+Content-Type: application/json
 
 ########
 
 GET http://localhost:8009/products/90c0393d-0bbe-4d72-bdb3-9a27c769c9ff
 User-Agent: Emacs
 Content-Type: application/json
-
-########
-PUT http://localhost:8009/products/90c0393d-0bbe-4d72-bdb3-9a27c769c9ff
-User-Agent: Emacs
-Content-Type: application/json
-
-{
- "name" : "My Product 3",
- "price": 2000
-}
