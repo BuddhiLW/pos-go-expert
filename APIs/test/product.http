@@ -5,6 +5,23 @@ User-Agent: Emacs
 Content-Type: application/json
 
 {
- "name" : "MyProduct",
- "price": 100
+ "name" : "My Product 3",
+ "price": 200
+}
+
+
+########
+
+GET http://localhost:8009/products/90c0393d-0bbe-4d72-bdb3-9a27c769c9ff
+User-Agent: Emacs
+Content-Type: application/json
+
+########
+PUT http://localhost:8009/products/90c0393d-0bbe-4d72-bdb3-9a27c769c9ff
+User-Agent: Emacs
+Content-Type: application/json
+
+{
+ "name" : "My Product 3",
+ "price": 2000
 }

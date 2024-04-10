@@ -39,11 +39,14 @@ func (p *Product) FindByID(id string) (*entity.Product, error) {
 }
 
 func (p *Product) Update(product *entity.Product) error {
-	_, err := p.FindByID(product.ID.String())
+	product_db, err := p.FindByID(product.ID.String())
 	if err != nil {
 		return err
 	}
-	return p.DB.Save(product).Error
+	product_db.Name = product.Name
+	product_db.Price = product.Price
+
+	return p.DB.Save(product_db).Error
 }
 
 func (p *Product) Delete(id string) error {
