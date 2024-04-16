@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/BuddhiLW/pos-go-expert/APIs/internal/dto"
 	"github.com/BuddhiLW/pos-go-expert/APIs/internal/entity"
@@ -59,6 +60,108 @@ func (h *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(product)
+}
+
+func (h *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil && r.URL.Query().Get("page") != "" {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil && r.URL.Query().Get("limit") != "" {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	products, err := h.ProductDB.FindAll(page, limit, "asc")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(products)
+	// products := []entity.Product{}
+	// page := r.URL.Query().Get("page")
+	// limit := r.URL.Query().Get("limit")
+	// log.Println("page: ", page, "limit: ", limit)
+
+	// if limit == "" && page == "" {
+	// 	products, err := h.ProductDB.FindAll(0, 0, "asc")
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		w.Write([]byte(err.Error()))
+	// 		return
+	// 	}
+
+	// 	w.Header().Set("Content-Type", "application/json")
+	// 	w.WriteHeader(http.StatusOK)
+	// 	json.NewEncoder(w).Encode(products)
+	// 	return
+	// }
+
+	// if page != "" && limit == "" {
+	// 	page, err := strconv.Atoi(page)
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		w.Write([]byte(err.Error()))
+	// 		return
+	// 	}
+
+	// 	products, err = h.ProductDB.FindAll(page, 0, "asc")
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		w.Write([]byte(err.Error()))
+	// 		return
+	// 	}
+	// }
+
+	// if limit != "" && page == "" {
+	// 	limit, err := strconv.Atoi(limit)
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		w.Write([]byte(err.Error()))
+	// 		return
+	// 	}
+
+	// 	products, err = h.ProductDB.FindAll(0, limit, "asc")
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		w.Write([]byte(err.Error()))
+	// 		return
+	// 	}
+	// }
+
+	// if page != "" && limit != "" {
+	// 	limit, err := strconv.Atoi(limit)
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		w.Write([]byte(err.Error()))
+	// 		return
+	// 	}
+	// 	page, err := strconv.Atoi(page)
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		w.Write([]byte(err.Error()))
+	// 		return
+	// 	}
+
+	// 	products, err = h.ProductDB.FindAll(page, limit, "asc")
+	// 	if err != nil {
+	// 		w.WriteHeader(http.StatusInternalServerError)
+	// 		w.Write([]byte(err.Error()))
+	// 		return
+	// 	}
+	// }
+
+	// w.Header().Set("Content-Type", "application/json")
+	// w.WriteHeader(http.StatusOK)
+	// json.NewEncoder(w).Encode(products)
 }
 
 func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {

@@ -5,7 +5,17 @@ type CreateProductRequest struct {
 	Price float64 `json:"price" validate:"required"`
 }
 
-// type UpdateProductRequest struct {
-// 	Name  string  `json:"name"`
-// 	Price float64 `json:"price"`
-// }
+type CreateUserRequest struct {
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+type GetJWTInput struct {
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+type GetJWTOutput struct {
+	AccessToken string `json:"access_token"`
+}

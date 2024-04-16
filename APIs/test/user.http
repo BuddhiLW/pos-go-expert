@@ -1,0 +1,30 @@
+# -*- http -*-
+
+POST http://localhost:8009/users
+User-Agent: Emacs
+Content-Type: application/json
+
+{
+"name": "John",
+"email": "john@me.com",
+"password": "password"
+}
+
+POST http://localhost:8009/users/generate_token
+User-Agent: Emacs
+Content-Type: application/json
+
+{
+"email": "john@me.com",
+"password": "password"
+}
+
+
+POST http://localhost:8009/users/generate_token
+User-Agent: Emacs
+Content-Type: application/json
+
+{
+"email": "john@me.com",
+"password": "wrong-password"
+}

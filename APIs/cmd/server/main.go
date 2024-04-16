@@ -10,13 +10,13 @@ import (
 	"github.com/BuddhiLW/pos-go-expert/APIs/internal/infra/webserver/handlers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/jwtauth"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func main() {
 	config, err := configs.LoadConf(".")
-	// fmt.Println(config)
 
 	if err != nil {
 		panic(err)
@@ -31,13 +31,38 @@ func main() {
 	productHandler := handlers.NewProductHandler(productDB)
 
 	r := chi.NewRouter()
+	// r.Use(LogRequest)
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.WithValue("jwt", config.TokenAuth))
+	r.Use(middleware.WithValue("JwtExpiresIn", config.JWTExpiresIn))
 
-	r.Post("/products", productHandler.CreateProduct)
-	r.Get("/products/{id}", productHandler.GetProduct)
-	r.Put("/products/{id}", productHandler.UpdateProduct)
-	r.Delete("/products/{id}", productHandler.DeleteProduct)
+	r.Route("/products", func(r chi.Router) {
+		r.Use(jwtauth.Verifier(config.TokenAuth))
+		r.Use(jwtauth.Authenticator)
+
+		r.Post("/", productHandler.CreateProduct)
+		r.Get("/", productHandler.GetProducts)
+		r.Get("/{id}", productHandler.GetProduct)
+		r.Put("/{id}", productHandler.UpdateProduct)
+		r.Delete("/{id}", productHandler.DeleteProduct)
+	})
+
+	userDB := database.NewUser(db)
+	userHandler := handlers.NewUserHandler(userDB)
+
+	r.Post("/users", userHandler.Create)
+	r.Post("/users/generate_token", userHandler.GetJWT)
 
 	fmt.Println("Serving at:", string(config.WebSeverPort))
 	http.ListenAndServe(":"+string(config.WebSeverPort), r)
 }
+
+// Como um middleware looks like
+// func LogRequest(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(
+// 		func(w http.ResponseWriter, r *http.Request) {
+// 			log.Printf("Request: %s %s", r.Method, r.URL.Path)
+// 			next.ServeHTTP(w, r)
+// 		})
+// }
