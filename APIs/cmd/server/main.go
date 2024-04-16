@@ -5,15 +5,35 @@ import (
 	"net/http"
 
 	"github.com/BuddhiLW/pos-go-expert/APIs/configs"
+	_ "github.com/BuddhiLW/pos-go-expert/APIs/docs"
 	"github.com/BuddhiLW/pos-go-expert/APIs/internal/entity"
 	"github.com/BuddhiLW/pos-go-expert/APIs/internal/infra/database"
 	"github.com/BuddhiLW/pos-go-expert/APIs/internal/infra/webserver/handlers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/jwtauth"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
+
+// @title           Go Expert API Example
+// @version         1.0
+// @description     Product API with auhtentication
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   Pedro Gomes Branquinho
+// @contact.url    http://www.buddhilw.com
+// @contact.email  pedrogbranquinho@gmail.com
+
+// @license.name   Full Cycle License
+// @license.url    http://www.fullcycle.com.br
+
+// @host      localhost:8009
+// @BasePath  /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 
 func main() {
 	config, err := configs.LoadConf(".")
@@ -53,6 +73,8 @@ func main() {
 
 	r.Post("/users", userHandler.Create)
 	r.Post("/users/generate_token", userHandler.GetJWT)
+
+	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8009/docs/doc.json")))
 
 	fmt.Println("Serving at:", string(config.WebSeverPort))
 	http.ListenAndServe(":"+string(config.WebSeverPort), r)

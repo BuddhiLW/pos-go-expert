@@ -1,0 +1,64 @@
+basePath: /
+definitions:
+  dto.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  handlers.Error:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8009
+info:
+  contact:
+    email: pedrogbranquinho@gmail.com
+    name: Pedro Gomes Branquinho
+    url: http://www.buddhilw.com
+  description: Product API with auhtentication
+  license:
+    name: Full Cycle License
+    url: http://www.fullcycle.com.br
+  termsOfService: http://swagger.io/terms/
+  title: Go Expert API Example
+  version: "1.0"
+paths:
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Create user
+      parameters:
+      - description: user request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.Error'
+      summary: Create user
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
