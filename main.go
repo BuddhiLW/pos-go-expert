@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	exp_gorm "github.com/buddhilw/pos-go-expert/gorm"
+	routines "github.com/buddhilw/pos-go-expert/go-routines"
 )
 
 func Spacing() {
@@ -97,23 +97,27 @@ func main() {
 	// db.AllProductsExample()
 	// Spacing()
 
-	fmt.Println("DB-GORM - Automigrate:")
-	exp_gorm.AutoMigrateExample()
-	Spacing()
+	// fmt.Println("DB-GORM - Automigrate:")
+	// exp_gorm.AutoMigrateExample()
+	// Spacing()
 
-	fmt.Println("DB-GORM - Create products:")
-	exp_gorm.GormCreateProductsExample()
-	Spacing()
+	// fmt.Println("DB-GORM - Create products:")
+	// exp_gorm.GormCreateProductsExample()
+	// Spacing()
 
-	fmt.Println("DB-GORM - Read products:")
-	exp_gorm.GormReadProductsExample()
-	Spacing()
+	// fmt.Println("DB-GORM - Read products:")
+	// exp_gorm.GormReadProductsExample()
+	// Spacing()
 
 	// fmt.Println("DB-GORM - Preloaded find:")
 	// exp_gorm.PreloadedFindExample()
 	// Spacing()
 
-	fmt.Println("DB-GORM - Delete all products:")
-	exp_gorm.GormDeleteAllProductsExample()
+	// fmt.Println("DB-GORM - Delete all products:")
+	// exp_gorm.GormDeleteAllProductsExample()
+	// Spacing()
+
+	fmt.Println("Go routines - Wait Groups:\n")
+	routines.WaitGroups()
 	Spacing()
 }

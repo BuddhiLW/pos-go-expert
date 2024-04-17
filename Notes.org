@@ -174,12 +174,12 @@ This example `import`s from the _core_ libraries (=fmt=) and from a internal mod
 
 Final consideration:
 =go mod tidy= will automatically figure the dependency trees and version for the current project and update the list of dependencies, in case a new one is being used, or any of them is not being used (and then is discarded from the list).
-* TODO Common Libraries
+* HOLD Common Libraries
 ** TODO OS (Filesystem manipulation)
 ** TODO JSON Marshall/Unmarshall
 ** TODO HTTP Calls
 *** TODO CEP HTTP call
-* STRT Working with DBs - MariaDB (MySQL fork)
+* HOLD Working with DBs - MariaDB (MySQL fork)
 ** Setup
 #+begin_src shell
 cd banco-de-dados
@@ -323,6 +323,28 @@ MariaDB [goexpert]> select * from products;
 
 *** Questions
 In what moment the table =products= was created/implied in migration? If we changed the =type= to =airplane=, would the table be called =airplanes=, in migration?
+* TODO Threads, Parallelism and Concurrency
+
+#+begin_src go :tangle ./go-routines/code.go
+package routines
+
+import (
+	"fmt"
+	"time"
+)
+
+func task(name string) {
+	for i := 0; i < 10; i++ {
+		fmt.Printf("%d: Task %s is running \n", i, name)
+		time.Sleep(1 * time.Second)
+	}
+}
+
+func main() {
+	go task("A")
+	go task("B")
+}
+#+end_src
 
 * TODO Vocabulary
 ** TODO What is a Multiplexer? (ChatGPT prompting)
