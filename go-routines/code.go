@@ -115,13 +115,13 @@ func Channels(n int) {
 			if i == 0 {
 				channel <- "Hello world! My first message in this Go Channel!"
 				t = time.Now()
-				fmt.Println("Thread 2 started filling channel, at the first time at:", t.Format("15:04:05.000000000"))
+				fmt.Println("Thread 2 (pub), started filling channel, at the first time at:", t.Format("15:04:05.000000000"))
 				count++
 
 				time.Sleep(2 * time.Second)
 			} else {
 				t = time.Now()
-				fmt.Println("Thread 2, filling channel again at:", t.Format("15:04:05.000000000"))
+				fmt.Printf("Thread 2 (pub), filling channel again (%d time) at: %s\n", i, t.Format("15:04:05.000000000"))
 				channel <- "Hello, filling the channel again, after 2 seconds!"
 				count++
 
@@ -131,9 +131,23 @@ func Channels(n int) {
 
 	}()
 
-	// Thread 1
 	for count < n {
+		// Thread 3
+		go func() {
+			fmsg := <-channel
+			fmt.Println(fmsg + " (sub from Thread 3)\n")
+			count++
+		}()
+
+		// Thread 4
+		go func() {
+			fmsg := <-channel
+			fmt.Println(fmsg + " (sub from Thread 4)\n")
+			count++
+		}()
+
+		// Thread 1
 		msg := <-channel
-		fmt.Println(msg)
+		fmt.Println(msg + " (sub from Thread 1)\n")
 	}
 }
