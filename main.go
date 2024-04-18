@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	routines "github.com/buddhilw/pos-go-expert/go-routines"
+	"github.com/buddhilw/pos-go-expert/go-routines"
 )
 
 func Spacing() {
@@ -138,7 +138,11 @@ func main() {
 	// routines.PubSub()
 	// Spacing()
 
-	fmt.Println("Go routines - PubSub using WaitGroups:\n")
-	routines.WaitGroupPubSub(12)
+	// fmt.Println("Go routines - PubSub using WaitGroups:\n")
+	// routines.WaitGroupPubSub(12)
+	// Spacing()
+
+	fmt.Println("Go routines - Load Balancer:\n")
+	routines.LoadBalancer(1_000_000, 10_000_000)
 	Spacing()
 }
