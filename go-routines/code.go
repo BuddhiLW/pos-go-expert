@@ -2,7 +2,10 @@ package routines
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -58,4 +61,79 @@ func WaitGroups() {
 	// }()
 
 	waitGroup.Wait()
+}
+
+var number uint64 = 0
+
+func HTTP_race() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		number++
+		log.Printf("Number: %d", number)
+		w.Write([]byte(fmt.Sprintf("Number: %d", number)))
+	})
+	http.ListenAndServe(":3000", nil)
+}
+
+func HTTP_race_mux() {
+	m := sync.Mutex{}
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		m.Lock()
+		number++
+		m.Unlock()
+
+		log.Printf("Number: %d", number)
+		w.Write([]byte(fmt.Sprintf("Number: %d", number)))
+	})
+	http.ListenAndServe(":3000", nil)
+}
+
+func Atomic() {
+	// m := sync.Mutex{}
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Switch this code:
+		// m.Lock()
+		// number++
+		// m.Unlock()
+
+		// For this:
+		atomic.AddUint64(&number, 1)
+		log.Printf("Number: %d", number)
+		w.Write([]byte(fmt.Sprintf("Number: %d", number)))
+	})
+	http.ListenAndServe(":3000", nil)
+}
+
+// Thread 1
+func Channels(n int) {
+	channel := make(chan string)
+
+	var count int = 0
+	// Thread 2
+	go func() {
+		for i := 0; i < n; i++ {
+			var t time.Time
+			if i == 0 {
+				channel <- "Hello world! My first message in this Go Channel!"
+				t = time.Now()
+				fmt.Println("Thread 2 started filling channel, at the first time at:", t.Format("15:04:05.000000000"))
+				count++
+
+				time.Sleep(2 * time.Second)
+			} else {
+				t = time.Now()
+				fmt.Println("Thread 2, filling channel again at:", t.Format("15:04:05.000000000"))
+				channel <- "Hello, filling the channel again, after 2 seconds!"
+				count++
+
+				time.Sleep(2 * time.Second)
+			}
+		}
+
+	}()
+
+	// Thread 1
+	for count < n {
+		msg := <-channel
+		fmt.Println(msg)
+	}
 }

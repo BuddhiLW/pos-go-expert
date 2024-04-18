@@ -117,7 +117,20 @@ func main() {
 	// exp_gorm.GormDeleteAllProductsExample()
 	// Spacing()
 
-	fmt.Println("Go routines - Wait Groups:\n")
-	routines.WaitGroups()
+	// fmt.Println("Go routines - Wait Groups:\n")
+	// routines.WaitGroups()
+	// Spacing()
+
+	// fmt.Println("Go routines - HTTP races:\n")
+	// routines.HTTP_race()
+	// Spacing()
+	//
+
+	// fmt.Println("Go routines - HTTP races:\n")
+	// routines.HTTP_race_mux()
+	// Spacing()
+
+	fmt.Println("Go routines - Channels:\n")
+	routines.Channels(10)
 	Spacing()
 }
