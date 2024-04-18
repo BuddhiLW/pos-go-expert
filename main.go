@@ -130,7 +130,15 @@ func main() {
 	// routines.HTTP_race_mux()
 	// Spacing()
 
-	fmt.Println("Go routines - Channels:\n")
-	routines.Channels(10)
+	// fmt.Println("Go routines - Channels:\n")
+	// routines.Channels(12)
+	// Spacing()
+
+	// fmt.Println("Go routines - PubSub:\n")
+	// routines.PubSub()
+	// Spacing()
+
+	fmt.Println("Go routines - PubSub using WaitGroups:\n")
+	routines.WaitGroupPubSub(12)
 	Spacing()
 }

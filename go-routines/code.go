@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -110,29 +111,29 @@ func Channels(n int) {
 	var count int = 0
 	// Thread 2
 	go func() {
-		for i := 0; i < n; i++ {
+		for i := 1; i < n+1; i++ {
 			var t time.Time
-			if i == 0 {
+			if i == 1 {
 				channel <- "Hello world! My first message in this Go Channel!"
 				t = time.Now()
 				fmt.Println("Thread 2 (pub), started filling channel, at the first time at:", t.Format("15:04:05.000000000"))
 				count++
 
-				time.Sleep(2 * time.Second)
+				time.Sleep(10 * time.Millisecond)
 			} else {
 				t = time.Now()
 				fmt.Printf("Thread 2 (pub), filling channel again (%d time) at: %s\n", i, t.Format("15:04:05.000000000"))
-				channel <- "Hello, filling the channel again, after 2 seconds!"
+				channel <- "Hello, filling out the channel again, after 2 seconds!"
 				count++
 
-				time.Sleep(2 * time.Second)
+				time.Sleep(10 * time.Millisecond)
 			}
 		}
-
+		close(channel)
 	}()
 
-	for count < n {
-		// Thread 3
+	// Pub -> competitive Sub
+	for i := range channel {
 		go func() {
 			fmsg := <-channel
 			fmt.Println(fmsg + " (sub from Thread 3)\n")
@@ -147,7 +148,138 @@ func Channels(n int) {
 		}()
 
 		// Thread 1
-		msg := <-channel
+		msg := i
 		fmt.Println(msg + " (sub from Thread 1)\n")
 	}
+
+	// Pub -> []subs
+	// for i := range channel {
+	// 	go func() {
+	// 		fmsg := i
+	// 		fmt.Println(fmsg + " (sub from Thread 3)\n")
+	// 		count++
+	// 	}()
+
+	// 	// Thread 4
+	// 	go func() {
+	// 		fmsg := i
+	// 		fmt.Println(fmsg + " (sub from Thread 4)\n")
+	// 		count++
+	// 	}()
+
+	// 	// // Thread 1
+	// 	// msg := i
+	// 	// fmt.Println(msg + " (sub from Thread 1)\n")
+	// }
+
 }
+
+func publish(ch chan int) {
+	for i := 0; i < 10; i++ {
+		ch <- i
+	}
+	close(ch)
+}
+
+func subscription(ch chan int) {
+	for i := range ch {
+		fmt.Println(i)
+	}
+}
+
+func PubSub() {
+	ch := make(chan int)
+	go publish(ch)
+	subscription(ch)
+}
+
+// func readerPubSubWG(channel chan string, count int, wg *sync.WaitGroup) {
+// 	// Pub -> competitive Sub
+// 	for i := range channel {
+// 		go func() {
+// 			fmsg := <-channel
+// 			fmt.Println(fmsg + " (sub from Thread 3)\n")
+// 			count++
+// 			wg.Done()
+// 		}()
+
+// 		// Thread 4
+// 		go func() {
+// 			fmsg := <-channel
+// 			fmt.Println(fmsg + " (sub from Thread 4)\n")
+// 			count++
+// 			wg.Done()
+// 		}()
+
+// 		// Thread 1
+// 		msg := i
+// 		fmt.Println(msg + " (sub from Thread 1)\n")
+// 		wg.Done()
+// 	}
+// }
+
+// func publisherPubSubWG(channel chan string, n, count int) {
+// 	for i := 1; i < n+1; i++ {
+// 		var t time.Time
+
+// 		if i == 1 {
+// 			channel <- "Hello world! My first message in this Go Channel!"
+// 			t = time.Now()
+// 			fmt.Println("Thread 2 (pub), started filling channel, at the first time at:", t.Format("15:04:05.000000000"))
+// 			count++
+
+// 			time.Sleep(50 * time.Millisecond)
+// 			// wg.Done()
+// 		} else {
+// 			t = time.Now()
+// 			fmt.Printf("Thread 2 (pub), filling channel again (%d time) at: %s\n", i, t.Format("15:04:05.000000000"))
+// 			channel <- "Hello, filling out the channel again, after 2 seconds!"
+// 			count++
+
+// 			time.Sleep(50 * time.Millisecond)
+// 			// wg.Done()
+// 		}
+// 	}
+// 	close(channel)
+// }
+
+// func WaitGroupPubSub(n int) {
+// 	// Thread 1
+// 	channel := make(chan string)
+// 	wg := sync.WaitGroup{}
+// 	wg.Add(n)
+
+// 	var count int = 0
+// 	go publisherPubSubWG(channel, n, count)
+
+// 	// Thread 1
+// 	readerPubSubWG(channel, count, &wg)
+// 	wg.Wait()
+// }
+
+func subWG(id int, ch <-chan int, wg *sync.WaitGroup) {
+	for x := range ch {
+		fmt.Println("Thread " + strconv.Itoa(id) + " received: " + strconv.Itoa(x))
+		wg.Done()
+	}
+}
+
+func publishWG(ch chan<- int, n int) {
+	for i := 0; i < n; i++ {
+		ch <- i
+	}
+	close(ch)
+}
+
+func WaitGroupPubSub(n int) {
+	ch := make(chan int)
+	wg := sync.WaitGroup{}
+	wg.Add(n)
+
+	go publishWG(ch, n)
+	go subWG(1, ch, &wg)
+
+	wg.Wait()
+}
+
+// -----------------

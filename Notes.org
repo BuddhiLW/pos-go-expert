@@ -345,6 +345,126 @@ func main() {
 	go task("B")
 }
 #+end_src
+** TODO Notes on a Pub/Sub logic
+*** *User input for chatgpt*
+#+begin_src go
+// Thread 1
+func Channels(n int) {
+	channel := make(chan string)
+
+	var count int = 0
+	// Thread 2
+	go func() {
+		for i := 1; i < n+1; i++ {
+			var t time.Time
+			if i == 1 {
+				channel <- "Hello world! My first message in this Go Channel!"
+				t = time.Now()
+				fmt.Println("Thread 2 (pub), started filling channel, at the first time at:", t.Format("15:04:05.000000000"))
+				count++
+
+				time.Sleep(10 * time.Millisecond)
+			} else {
+				t = time.Now()
+				fmt.Printf("Thread 2 (pub), filling channel again (%d time) at: %s\n", i, t.Format("15:04:05.000000000"))
+				channel <- "Hello, filling out the channel again, after 2 seconds!"
+				count++
+
+				time.Sleep(10 * time.Millisecond)
+			}
+		}
+		close(channel)
+	}()
+
+	// Pub -> competitive Sub
+	for i := range channel {
+		go func() {
+			fmsg := <-channel
+			fmt.Println(fmsg + " (sub from Thread 3)\n")
+			count++
+		}()
+
+		// Thread 4
+		go func() {
+			fmsg := <-channel
+			fmt.Println(fmsg + " (sub from Thread 4)\n")
+			count++
+		}()
+
+		// Thread 1
+		msg := i
+		fmt.Println(msg + " (sub from Thread 1)\n")
+	}
+}
+#+end_src
+
+outputs, with n=12:
+
+#+begin_src output
+Thread 2 (pub), started filling channel, at the first time at: 11:39:30.775683572
+Hello world! My first message in this Go Channel! (sub from Thread 1)
+
+Thread 2 (pub), filling channel again (2 time) at: 11:39:30.785861485
+Hello, filling out the channel again, after 2 seconds! (sub from Thread 1)
+
+(...)
+
+ (sub from Thread 3)
+
+ (sub from Thread 3)
+
+ (sub from Thread 4)
+#+end_src
+Why are the Threads 3 and 4 still trying and being able to read from an empty channel?
+
+*** *asst_3u12cn4wgxzMHdgdVzbVr6CK*
+In your Go program, you have concurrency issues due to multiple goroutines attempting to read from the same channel concurrently without proper synchronization.
+
+The primary issue here arises in the following part of your channel reading loop:
+
+#+begin_src go
+for i := range channel {
+    go func() {
+        fmsg := <-channel
+        fmt.Println(fmsg + " (sub from Thread 3)\n")
+        count++
+    }()
+
+    go func() {
+        fmsg := <-channel
+        fmt.Println(fmsg + " (sub from Thread 4)\n")
+        count++
+    }()
+
+    msg := i
+    fmt.Println(msg + " (sub from Thread 1)\n")
+}
+#+end_src
+
+When you use i directly in your loop, one message is read and processed by Thread 1 immediately when range channel fetches a new message. Then, inside the two goroutines (func() instances), further attempts to read from the channel are made directly using <-channel. For each iteration (for each message sent by the publisher loop), you are creating two additional goroutines each trying to read from the same channel.
+
+The race occurs because there isn’t any guarantee about when the goroutines will be scheduled to run in relation to when messages are sent, received by the loop's main body, or even in relation to each other. When a goroutine tries to read from a channel that has no messages (because it gets consumed by one of the threads or there's a scheduling delay leading to a late execution), it will read an empty value or block indefinitely if the channel is not yet closed.
+
+Once the channel is closed, any attempts to read from it won't block, but rather immediately return the zero value of the channel's element type. This is the reason you're seeing empty messages as output from Threads 3 and 4.
+
+Here's a summary:
+
+Thread 1 reads a message as part of the for loop's range clause.
+Thread 3 and 4 potentially compete for the next available messages, but depending on the timing, they might end up reading from the channel when no messages are left after it is closed, leading them just to print the zero-value message, which in the case of a string is an empty string "".
+To fix this:
+
+Eliminate concurrent reads inside the loop unless you specifically ensure that you send enough messages to fulfill all concurrent reads (which is prone to mistakes).
+Directly handle each message within the main loop and avoid spawning additional concurrent readers unless you have a mechanism ensuring data is available before they attempt to read.
+Here is a revised version without unnecessary concurrency on reading, which should help avoid the problem:
+
+#+begin_src go
+for msg := range channel {
+    fmt.Println(msg + " (received by main thread)")
+    count++
+}
+#+end_src
+
+This way, you only read as many messages as are sent, and each read is handled sequentially. If you need to process them concurrently, ensure a proper design that matches the number of producers and consumers or use synchronization tools like additional channels, WaitGroups, etc., to manage the lifecycle and availability of data correctly.
 
 * TODO Vocabulary
 ** TODO What is a Multiplexer? (ChatGPT prompting)
