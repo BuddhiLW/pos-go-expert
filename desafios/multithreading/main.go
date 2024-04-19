@@ -13,11 +13,9 @@ import (
 // - Limitar o tempo de resposta em 1 segundo. Caso contrário, o erro de timeout deve ser exibido.
 
 func main() {
-	// https://brasilapi.com.br/api/cep/v1/01153000 + cep
-	// http://viacep.com.br/ws/" + cep + "/json/
-	// cep := os.Args[1]
+	//source 1: https://brasilapi.com.br/api/cep/v1/ + cep
+	//source 2: http://viacep.com.br/ws/ + cep + /json/
 
-	// Create a server
 	mux := http.NewServeMux()
 	mux.HandleFunc("/cep", handlers.CEP)
 	log.Println("Running at: 8001")
