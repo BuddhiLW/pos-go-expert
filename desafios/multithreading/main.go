@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/buddhilw/pos-go-expert/desafios/multithreading/handlers"
@@ -19,5 +20,6 @@ func main() {
 	// Create a server
 	mux := http.NewServeMux()
 	mux.HandleFunc("/cep", handlers.CEP)
+	log.Println("Running at: 8001")
 	http.ListenAndServe(":8001", mux)
 }
