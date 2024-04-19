@@ -142,7 +142,15 @@ func main() {
 	// routines.WaitGroupPubSub(12)
 	// Spacing()
 
-	fmt.Println("Go routines - Load Balancer:\n")
-	routines.LoadBalancer(1_000_000, 10_000_000)
+	// fmt.Println("Go routines - Load Balancer:\n")
+	// routines.LoadBalancer(1_000_000, 10_000_000)
+	// Spacing()
+
+	// fmt.Println("Go routines - Select:\n")
+	// routines.LoadBalancer(1_000_000, 10_000_000)
+	// Spacing()
+
+	fmt.Println("Go routines - Select with Go Routines\n")
+	routines.SelectPubSub()
 	Spacing()
 }
