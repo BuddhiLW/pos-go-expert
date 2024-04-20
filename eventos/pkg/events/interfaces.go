@@ -2,8 +2,10 @@ package events
 
 import "time"
 
+type EventName string
+
 type EventInterface interface {
-	Name() string
+	Name() EventName
 	DateTime() time.Time
 	Payload() interface{}
 }
@@ -12,11 +14,13 @@ type EventHandlerInterface interface {
 	Handle(event EventInterface)
 }
 
+// Dispath(Event) -> []EventHandler <=> Event ~ []EventHandler
+
 type EventDispatcherInterface interface {
 	// Dispatch(event EventInterface)
-	Register(eventName string, handler EventHandlerInterface) error
+	Register(eventName EventName, handler EventHandlerInterface) error
 	Dispatch(event EventInterface) error
-	Remove(eventName string, handler EventHandlerInterface) error
-	Has(eventName string, handler EventHandlerInterface) bool
+	Remove(eventName EventName, handler EventHandlerInterface) error
+	Has(eventName EventName, handler EventHandlerInterface) bool
 	Clear() error
 }
