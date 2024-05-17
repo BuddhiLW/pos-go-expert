@@ -1,6 +1,7 @@
 package events
 
 import (
+	"sync"
 	"testing"
 	"time"
 
@@ -28,7 +29,7 @@ func (e *TestEvent) Payload() interface{} {
 
 type TestEventHandler struct{ ID int }
 
-func (h *TestEventHandler) Handle(event EventInterface) {
+func (h *TestEventHandler) Handle(event EventInterface, wg *sync.WaitGroup) {
 }
 
 // Suite test Event Dispatcher
@@ -117,19 +118,30 @@ type EventHandlerMock struct {
 	mock.Mock
 }
 
-func (m *EventHandlerMock) Handle(event EventInterface) {
+func (m *EventHandlerMock) Handle(event EventInterface, wg *sync.WaitGroup) {
 	m.Called(event)
+	wg.Done()
 }
 
 func (suite *EventDispatcherTestSuite) TestEventDispatch_Dispatch() {
-	eh := &EventHandlerMock{}
-	eh.On("Handle", &suite.event)
-	suite.eventDispatcher.Register(suite.event.Name(), eh)
+	h := &EventHandlerMock{}
+	h.On("Handle", &suite.event)
+
+	h2 := &EventHandlerMock{}
+	h2.On("Handle", &suite.event)
+
+	suite.eventDispatcher.Register(suite.event.Name(), h)
+	suite.eventDispatcher.Register(suite.event.Name(), h2)
+
 	suite.eventDispatcher.Dispatch(&suite.event)
+
 	// Make sure no errors happened, while making the Register or Dispatch calls.
-	eh.AssertExpectations(suite.T())
+	h.AssertExpectations(suite.T())
+	h2.AssertExpectations(suite.T())
+
 	// Make sure `Handle` mock was called, once we dispatched an event.
-	eh.AssertNumberOfCalls(suite.T(), "Handle", 1)
+	h.AssertNumberOfCalls(suite.T(), "Handle", 1)
+	h2.AssertNumberOfCalls(suite.T(), "Handle", 1)
 }
 
 func (suite *EventDispatcherTestSuite) TestEventDispatch_Remove() {

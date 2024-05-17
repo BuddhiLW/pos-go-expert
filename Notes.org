@@ -181,6 +181,7 @@ Final consideration:
 *** TODO CEP HTTP call
 * HOLD Working with DBs - MariaDB (MySQL fork)
 ** Setup
+
 #+begin_src shell
 cd banco-de-dados
 sudo docker compose up -d
@@ -195,6 +196,7 @@ sudo docker compose exec db bash
 mariadb --user=buddhilw --password=pass goexpert
 create table products (id varchar(255), name varchar(80), price decimal(10,2), primary key (id));
 #+end_src
+
 ** Code inserting data in DB
 #+begin_src go
 package db
@@ -323,7 +325,7 @@ MariaDB [goexpert]> select * from products;
 
 *** Questions
 In what moment the table =products= was created/implied in migration? If we changed the =type= to =airplane=, would the table be called =airplanes=, in migration?
-* TODO Threads, Parallelism and Concurrency
+* DONE Threads, Parallelism and Concurrency
 
 #+begin_src go :tangle ./go-routines/code.go
 package routines
@@ -345,7 +347,8 @@ func main() {
 	go task("B")
 }
 #+end_src
-** TODO Notes on a Pub/Sub logic
+
+** DONE Notes on a Pub/Sub logic
 *** *User input for chatgpt*
 #+begin_src go
 // Thread 1
@@ -465,7 +468,12 @@ for msg := range channel {
 #+end_src
 
 This way, you only read as many messages as are sent, and each read is handled sequentially. If you need to process them concurrently, ensure a proper design that matches the number of producers and consumers or use synchronization tools like additional channels, WaitGroups, etc., to manage the lifecycle and availability of data correctly.
-
+* TODO Event-driven Architecture (Event-Dispatcher-Handler)
+* TODO RabbitMQ
+** Producer
+** Exchange
+** Queue
+** Consumer
 * TODO Vocabulary
 ** TODO What is a Multiplexer? (ChatGPT prompting)
 
