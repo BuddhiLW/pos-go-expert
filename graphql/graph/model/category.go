@@ -1,8 +1,7 @@
 package model
 
 type Category struct {
-	ID          int       `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Courses     []*Course `json:"courses"`
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
 }

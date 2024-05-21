@@ -9,6 +9,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/BuddhiLW/pos-go-expert/graphql/graph"
+	"github.com/BuddhiLW/pos-go-expert/graphql/graph/generated"
 	"github.com/BuddhiLW/pos-go-expert/graphql/internal/database"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -24,17 +25,15 @@ func main() {
 
 	categoryDB := database.NewCategory(db)
 	courseDB := database.NewCourse(db)
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(
-		graph.Config{Resolvers: &graph.Resolver{
-			CategoryDB: categoryDB,
-			CourseDB:   courseDB,
-		}}))
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
+		CategoryDB: categoryDB,
+		CourseDB:   courseDB,
+	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
