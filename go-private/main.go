@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/BuddhiLW/fcutils-secret/pkg/events"
+	events "github.com/BuddhiLW/fcutils-secret/pkg/events"
 )
 
 func main() {
