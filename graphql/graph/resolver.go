@@ -1,6 +1,6 @@
 package graph
 
-import "github.com/buddhilw/pos-go-expert/graphql/internal/database"
+import "github.com/BuddhiLW/pos-go-expert/graphql/internal/database"
 
 // This file will not be regenerated automatically.
 //

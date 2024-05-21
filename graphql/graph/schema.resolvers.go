@@ -7,7 +7,7 @@ package graph
 import (
 	"context"
 
-	model "github.com/buddhilw/pos-go-expert/graphql/graph/model"
+	"github.com/BuddhiLW/pos-go-expert/graphql/graph/model"
 )
 
 // CreateCategory is the resolver for the createCategory field.

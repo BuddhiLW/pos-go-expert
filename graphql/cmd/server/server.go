@@ -8,8 +8,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/buddhilw/pos-go-expert/graphql/graph"
-	"github.com/buddhilw/pos-go-expert/graphql/internal/database"
+	"github.com/BuddhiLW/pos-go-expert/graphql/graph"
+	"github.com/BuddhiLW/pos-go-expert/graphql/internal/database"
 	_ "github.com/mattn/go-sqlite3"
 )
 
