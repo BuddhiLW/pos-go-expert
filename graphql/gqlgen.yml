@@ -66,7 +66,7 @@ resolver:
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
 autobind:
-#  - "github.com/buddhilw/pos-go-expert/grapql/graph/model"
+#  - "github.com/buddhilw/pos-go-expert/grahpql/graph/model"
 
 # This section declares type mapping between the GraphQL and go type systems
 #
@@ -74,6 +74,12 @@ autobind:
 # modelgen, the others will be allowed when binding to fields. Configure them to
 # your liking
 models:
+  Category:
+    model:
+      - github.com/buddhilw/pos-go-expert/graphql/model.Category
+  Course:
+    model:
+      - github.com/buddhilw/pos-go-expert/graphql/model.Course
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID

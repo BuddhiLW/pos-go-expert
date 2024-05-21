@@ -1,6 +1,6 @@
 package graph
 
-import "github.com/buddhilw/pos-go-expert/grapql/internal/database"
+import "github.com/buddhilw/pos-go-expert/graphql/internal/database"
 
 // This file will not be regenerated automatically.
 //
@@ -8,4 +8,5 @@ import "github.com/buddhilw/pos-go-expert/grapql/internal/database"
 
 type Resolver struct {
 	CategoryDB *database.Category
+	CourseDB   *database.Course
 }
