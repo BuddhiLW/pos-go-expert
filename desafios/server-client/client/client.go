@@ -45,13 +45,6 @@ func DolarBidRequest() {
 	ctxGet, cancel := context.WithTimeout(context.Background(), time.Duration(300)*time.Millisecond)
 	defer cancel()
 
-	// c := http.Client{Timeout: time.Duration(300) * time.Millisecond}
-	// req, err := c.Get("http://localhost:8080/cotacao")
-	// if err != nil {
-	// 	panic(err)
-
-	// }
-	// defer req.Body.Close()
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080/cotacao", nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")

@@ -225,6 +225,7 @@ func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	product.ID, err = entityPkg.ParseID(id)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
