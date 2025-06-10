@@ -1,0 +1,33 @@
+### Get All Orders
+GET http://localhost:8000/orders
+Content-Type: application/json
+
+###
+
+### Create an order first (for testing)
+POST http://localhost:8000/order
+Content-Type: application/json
+
+{
+  "id": "test-order-1",
+  "price": 100.0,
+  "tax": 10.0
+}
+
+###
+
+### Create another order
+POST http://localhost:8000/order
+Content-Type: application/json
+
+{
+  "id": "test-order-2", 
+  "price": 200.0,
+  "tax": 20.0
+}
+
+###
+
+### Get all orders again (should show both orders)
+GET http://localhost:8000/orders
+Content-Type: application/json 
