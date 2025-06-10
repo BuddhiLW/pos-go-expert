@@ -24,48 +24,54 @@ go run cmd/ordersystem/main.go cmd/ordersystem/wire_gen.go
 #### Criar ordem
 
 ``` bash
-curl -s http://localhost:9002/orders -H "Content-Type: application/json" -d '{"id": "manual-test", "Price": 100, "Tax": 10}' | jq .
+꧂ (λ) curl -X POST http://localhost:8000/order \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "test-order-1",
+    "price": 100.0,
+    "tax": 10.0
+  }'
+```
+
+```
+{"id":"test-order-1","price":100,"tax":10,"final_price":110}
 ```
 
 #### Listar ordens
 
 ``` bash
-curl -s http://localhost:9002/orders | jq .
+curl -s http://localhost:8000/orders -H "Content-Type: application/json" | jq .
 ``` 
 
 ``` output
-[
-  {
-    "id": "manual-test",
-    "Price": 100,
-    "Tax": 10,
-    "FinalPrice": 110
-  },
-  {
-    "id": "order-001",
-    "Price": 100,
-    "Tax": 10,
-    "FinalPrice": 110
-  },
-  {
-    "id": "order-002",
-    "Price": 250.5,
-    "Tax": 25.05,
-    "FinalPrice": 275.55
-  },
-  {
-    "id": "order-003",
-    "Price": 75.25,
-    "Tax": 7.53,
-    "FinalPrice": 82.78
-  },
-  {
-    "id": "test-123",
-    "Price": 100,
-    "Tax": 10,
-    "FinalPrice": 110 
+{
+  "orders": [
+    {
+      "id": "eqwewq3",
+      "price": 1999.99,
+      "tax": 200,
+      "final_price": 2199.99
+    },
+    {
+      "id": "order-001",
+      "price": 100,
+      "tax": 10,
+      "final_price": 110
+    },
+    {
+      "id": "order-002",
+      "price": 250.5,
+      "tax": 25.05,
+      "final_price": 275.55
+    },
+    {
+      "id": "order-003",
+      "price": 75.25,
+      "tax": 7.53,
+      "final_price": 82.78
     }
-]
+  ]
+}
 ```
 
 
