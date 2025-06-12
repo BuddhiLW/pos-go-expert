@@ -2,200 +2,241 @@
 
 ## Como rodar o projeto
 
+### Opção 1: Docker Compose (Recomendado)
 
-Construa a imagens e rode-as, em fundo:
+Construa as imagens e rode todo o projeto com um único comando:
 
 ``` bash
 rm -rf .docker                # Limpa o cache do docker
-docker compose up --build -d  # constrói as imagens e sobe os containers em plano de fundo
+docker compose up --build     # constrói as imagens e sobe todos os serviços
 ```
 
-Rode o projeto:
+Isso irá subir:
+- **MySQL** na porta 3306
+- **RabbitMQ** na porta 5672 (management na 15672)  
+- **Aplicação Go** com:
+  - HTTP REST API na porta 8000
+  - gRPC na porta 50051
+  - GraphQL na porta 9002
+
+### Opção 2: Desenvolvimento Local
+
+Se preferir rodar apenas as dependências no Docker e a aplicação localmente:
 
 ``` bash
+# Sobe apenas as dependências
+docker compose up mysql rabbitmq -d
+
+# Roda a aplicação localmente
 go run cmd/ordersystem/main.go cmd/ordersystem/wire_gen.go
 ```
 
-## Chamadas
+## Testando a aplicação
 
+### REST API (porta 8000)
 
-### HTTP
-
-#### Criar ordem
-
-``` bash
-꧂ (λ) curl -X POST http://localhost:8000/order \
+**Criar um pedido:**
+```bash
+curl -X POST http://localhost:8000/order \
   -H "Content-Type: application/json" \
   -d '{
-    "id": "test-order-1",
-    "price": 100.0,
-    "tax": 10.0
+    "id":"123e4567-e89b-12d3-a456-426614174000",
+    "price": 100.5,
+    "tax": 0.5,
+    "final_price": 101.0
   }'
 ```
 
+**Listar pedidos:**
+```bash
+curl http://localhost:8000/orders
 ```
-{"id":"test-order-1","price":100,"tax":10,"final_price":110}
+
+**Status da API:**
+```bash
+curl http://localhost:8000/
 ```
 
-#### Listar ordens
+### GraphQL (porta 9002)
 
-``` bash
-curl -s http://localhost:8000/orders -H "Content-Type: application/json" | jq .
-``` 
+Acesse http://localhost:9002 no navegador para usar o GraphQL Playground.
 
-``` output
+**Exemplo de query:**
+```graphql
+query {
+  orders {
+    id
+    Price
+    Tax
+    FinalPrice
+  }
+}
+```
+
+**Exemplo de mutation:**
+```graphql
+mutation {
+  createOrder(input: {
+    id: "new-order-123"
+    Price: 199.99
+    Tax: 20.0
+    FinalPrice: 219.99
+  }) {
+    id
+    Price
+    Tax
+    FinalPrice
+  }
+}
+```
+
+### gRPC (porta 50051)
+
+Use um cliente gRPC como `grpcurl` ou `evans` para testar:
+
+```bash
+# Listar serviços disponíveis
+grpcurl -plaintext localhost:50051 list
+
+# Criar um pedido
+grpcurl -plaintext -d '{
+  "id": "grpc-order-001",
+  "price": 150.0,
+  "tax": 15.0,
+  "final_price": 165.0
+}' localhost:50051 pb.OrderService/CreateOrder
+
+# Listar pedidos
+grpcurl -plaintext -d '{}' localhost:50051 pb.OrderService/ListOrders
+```
+
+Respondendo:
+
+```json
 {
   "orders": [
     {
-      "id": "eqwewq3",
-      "price": 1999.99,
-      "tax": 200,
-      "final_price": 2199.99
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "price": 100.5,
+      "tax": 0.5,
+      "finalPrice": 101
+    },
+    {
+      "id": "aewqeqewq3",
+      "price": 100.5,
+      "tax": 0.53,
+      "finalPrice": 101.03
+    },
+    {
+      "id": "grpc-order-001",
+      "price": 150,
+      "tax": 15,
+      "finalPrice": 165
     },
     {
       "id": "order-001",
       "price": 100,
       "tax": 10,
-      "final_price": 110
+      "finalPrice": 110
     },
     {
       "id": "order-002",
       "price": 250.5,
       "tax": 25.05,
-      "final_price": 275.55
+      "finalPrice": 275.55
     },
     {
       "id": "order-003",
       "price": 75.25,
       "tax": 7.53,
-      "final_price": 82.78
+      "finalPrice": 82.78
     }
   ]
 }
 ```
 
 
-### GraphQL
 
-#### Criar ordem
+### RabbitMQ Management
 
-``` bash
-curl -s http://localhost:9002/query -H "Content-Type: application/json" -d '{"query":"mutation { createOrder(input: {id: \"gql-working\", Price: 500.0, Tax: 50.0}) { id Price Tax FinalPrice } }"}' | jq .
-```
+Acesse http://localhost:15672 no navegador:
+- **Usuário:** guest
+- **Senha:** guest
 
-``` output
-Order created: {gql-working 500 50 550}{
-  "data": {
-    "createOrder": {
-      "id": "gql-working",
-      "Price": 500,
-      "Tax": 50,
-      "FinalPrice": 550
-    }
-  }
-}
-```
+## Arquitetura
 
-#### Listar ordens
-
-``` bash
-curl -s http://localhost:9002/query -H "Content-Type: application/json" -d '{"query": "query { orders { id Price Tax FinalPrice } }"}' | jq .
-``` 
+O projeto segue os princípios da Clean Architecture:
 
 ```
+cmd/ordersystem/          # Main application
+internal/
+├── entity/              # Entidades de negócio
+├── usecase/             # Casos de uso
+├── infra/
+│   ├── database/        # Implementações de banco de dados
+│   ├── web/             # Handlers HTTP
+│   ├── grpc/            # Serviços gRPC
+│   └── graph/           # Resolvers GraphQL
+└── event/               # Sistema de eventos
+```
+
+## Tecnologias utilizadas
+
+- **Go 1.22**
+- **MySQL 5.7** - Banco de dados principal
+- **RabbitMQ** - Message broker para eventos
+- **Chi Router** - HTTP router
+- **gRPC** - Comunicação entre serviços
+- **GraphQL** - API flexível para consultas
+- **Wire** - Injeção de dependência
+- **Docker & Docker Compose** - Containerização
+
+## Funcionalidades
+
+- ✅ **CRUD de Pedidos** via REST, gRPC e GraphQL
+- ✅ **Sistema de Eventos** com RabbitMQ
+- ✅ **Clean Architecture** com separação de responsabilidades
+- ✅ **Injeção de Dependência** com Google Wire
+- ✅ **Múltiplas interfaces** (HTTP, gRPC, GraphQL)
+- ✅ **Containerização** completa com Docker
+- ✅ **Health Checks** para todos os serviços
+
+## Estrutura de dados
+
+### Order (Pedido)
+```json
 {
-  "data": {
-    "orders": [
-      {
-        "id": "manual-test",
-        "Price": 100,
-        "Tax": 10,
-        "FinalPrice": 110
-      },
-      {
-        "id": "order-001",
-        "Price": 100,
-        "Tax": 10,
-        "FinalPrice": 110
-      },
-      {
-        "id": "order-002",
-        "Price": 250.5,
-        "Tax": 25.05,
-        "FinalPrice": 275.55
-      },
-      {
-        "id": "order-003",
-        "Price": 75.25,
-        "Tax": 7.53,
-        "FinalPrice": 82.78
-      },
-      {
-        "id": "test-123",
-        "Price": 100,
-        "Tax": 10,
-        "FinalPrice": 110
-      }
-    ]
-  }
+  "id": "string",
+  "price": "float64", 
+  "tax": "float64",
+  "final_price": "float64"
 }
 ```
 
-### gRPC
+## Logs e Monitoramento
 
+Para visualizar os logs da aplicação:
 
 ```bash
-evans internal/infra/grpc/protofiles/order.proto
+# Logs de todos os serviços
+docker compose logs -f
+
+# Logs apenas da aplicação
+docker compose logs -f ordersystem
+
+# Logs do MySQL
+docker compose logs -f mysql
+
+# Logs do RabbitMQ  
+docker compose logs -f rabbitmq
 ```
 
-``` output
-  ______
- |  ____|
- | |__    __   __   __ _   _ __    ___
- |  __|   \ \ / /  / _. | | '_ \  / __|
- | |____   \ V /  | (_| | | | | | \__ \
- |______|   \_/    \__,_| |_| |_| |___/
+## Parando os serviços
 
- more expressive universal gRPC client
+```bash
+# Para todos os serviços
+docker compose down
 
-
-pb.OrderService@127.0.0.1:50051> call CreateOrder
-id (TYPE_STRING) => eqwewq3
-price (TYPE_FLOAT) => 1999.99
-tax (TYPE_FLOAT) => 200.00
-{
-  "finalPrice": 2199.99,
-  "id": "eqwewq3",
-  "price": 1999.99,
-  "tax": 200
-}
-
-pb.OrderService@127.0.0.1:50051> call ListOrders
-{
-  "orders": [
-    {
-      "finalPrice": 2199.99,
-      "id": "eqwewq3",
-      "price": 1999.99,
-      "tax": 200
-    },
-    {
-      "finalPrice": 110,
-      "id": "order-001",
-      "price": 100,
-      "tax": 10
-    },
-    {
-      "finalPrice": 275.55,
-      "id": "order-002",
-      "price": 250.5,
-      "tax": 25.05
-    },
-    {
-      "finalPrice": 82.78,
-      "id": "order-003",
-      "price": 75.25,
-      "tax": 7.53
-    }
-  ]
+# Para e remove volumes (limpa dados)
+docker compose down -v
 ```
